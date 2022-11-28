@@ -34,12 +34,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "tipo_empleado")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Tipo_empleado.findAll", query = "SELECT t FROM tipo_empleado t")
-    , @NamedQuery(name = "Tipo_empleado.findByIdTipo_empleado", query = "SELECT t FROM tipo_empleado t WHERE t.id = :id")
-    , @NamedQuery(name = "Tipo_empleado.findClase_empleado", query = "SELECT t FROM tipo_empleado t WHERE t.clase_empleado = :clase_empleado")
-    , @NamedQuery(name = "Tipo_empleado.findByArea_empleo", query = "SELECT t FROM tipo_empleado t WHERE t.area_empleo = :area_empleo")
-    , @NamedQuery(name = "Tipo_empleado.findBySalario_soles", query = "SELECT t FROM tipo_empleado t WHERE t.salario_soles = :salario_soles")
-    , @NamedQuery(name = "Tipo_empleado.findBySalario_dolares", query = "SELECT t FROM tipo_empleado t WHERE t.salario_dolares = :salario_dolares")
+    @NamedQuery(name = "Tipo_empleado.findAll", query = "SELECT t FROM Tipo_empleado t")
+    , @NamedQuery(name = "Tipo_empleado.findByIdTipo_empleado", query = "SELECT t FROM Tipo_empleado t WHERE t.id = :id")
+    , @NamedQuery(name = "Tipo_empleado.findByClase_empleado", query = "SELECT t FROM Tipo_empleado t WHERE t.clase_empleado = :clase_empleado")
+    , @NamedQuery(name = "Tipo_empleado.findByArea_empleo", query = "SELECT t FROM Tipo_empleado t WHERE t.area_empleo = :area_empleo")
+    , @NamedQuery(name = "Tipo_empleado.findBySalario_soles", query = "SELECT t FROM Tipo_empleado t WHERE t.salario_soles = :salario_soles")
+    , @NamedQuery(name = "Tipo_empleado.findBySalario_dolares", query = "SELECT t FROM Tipo_empleado t WHERE t.salario_dolares = :salario_dolares")
     })
 public class Tipo_empleado implements Serializable {
 
@@ -49,7 +49,6 @@ public class Tipo_empleado implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
     @Column(name = "clase_empleado")
     private String clase_empleado;
     @Column(name = "area_empleo")
@@ -59,20 +58,22 @@ public class Tipo_empleado implements Serializable {
     @Column(name = "salario_dolares")
     private Integer salario_dolares;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipo_empleado",fetch=FetchType.LAZY)
-    @JsonBackReference(value="tipo_empleado_funcionario")
+    @JsonBackReference(value="tipo_empleado_func")
     private List<Empleado> empleadosList;
 
     public Tipo_empleado() {
     }
     
 
-    public Tipo_empleado(Integer id, String clase_empleado) {
+    public Tipo_empleado(Integer id) {
         this.id = id;
-        this.clase_empleado = clase_empleado;
+        
     }
 
-    public Tipo_empleado(String area_empleo, Integer salario_soles, Integer salario_dolares) {
+    public Tipo_empleado(Integer id,String clase_empleado,String area_empleo, Integer salario_soles, Integer salario_dolares) {
 		super();
+		this.id = id;
+		this.clase_empleado = clase_empleado;
 		this.area_empleo = area_empleo;
 		this.salario_soles = salario_soles;
 		this.salario_dolares = salario_dolares;

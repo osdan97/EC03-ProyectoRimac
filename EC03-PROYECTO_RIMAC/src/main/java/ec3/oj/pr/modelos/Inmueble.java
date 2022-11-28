@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 
+
 /**
  *
  * @author man
@@ -34,12 +37,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "inmueble")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "inmueble.findAll", query = "SELECT i FROM inmueble i")
-    , @NamedQuery(name = "inmueble.findByIdInmueble", query = "SELECT i FROM inmueble i WHERE i.id_inmueble = :id_inmueble")
-    , @NamedQuery(name = "inmueble.findByIdCliente", query = "SELECT i FROM inmueble i WHERE i.id_cliente = :id_cliente")
-    , @NamedQuery(name = "empleado.findByEstado", query = "SELECT i FROM inmueble i WHERE i.estado = :estado")
-    , @NamedQuery(name = "empleado.findByDelegacion_municipio", query = "SELECT i FROM inmueble i WHERE i.delegacion_municipio = :delegacion_municipio")
-    , @NamedQuery(name = "empleado.findByReferencia", query = "SELECT i FROM inmueble i WHERE i.referencia = :referencia")
+    @NamedQuery(name = "Inmueble.findAll", query = "SELECT i FROM Inmueble i")
+    , @NamedQuery(name = "Inmueble.findByIdInmueble", query = "SELECT i FROM Inmueble i WHERE i.id_inmueble = :id_inmueble")
+    , @NamedQuery(name = "Inmueble.findByEstado", query = "SELECT i FROM Inmueble i WHERE i.estado = :estado")
+    , @NamedQuery(name = "Inmueble.findByDelegacion_municipio", query = "SELECT i FROM Inmueble i WHERE i.delegacion_municipio = :delegacion_municipio")
+    , @NamedQuery(name = "Inmueble.findByReferencia", query = "SELECT i FROM Inmueble i WHERE i.referencia = :referencia")
 })
 public class Inmueble implements Serializable {
 
@@ -49,28 +51,28 @@ public class Inmueble implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_inmueble")
     private Integer id_inmueble;
-    @Basic(optional = false)
-    @Column(name = "id_cliente")
-    private Integer id_cliente;
     @Column(name = "estado")
     private String estado;
     @Column(name = "delegacion_municipio")
     private String delegacion_municipio;
     @Column(name = "referencia")
     private String referencia;
-   
+    @JoinColumn(name = "id_cliente", referencedColumnName = "idcliente")
+    @ManyToOne(optional = false)
+    private Cliente cliente;
   
     public Inmueble() {
     }
     
 
-    public Inmueble(Integer id_inmueble, Integer id_cliente) {
+    public Inmueble(Integer id_inmueble) {
         this.id_inmueble = id_inmueble;
-        this.id_cliente = id_cliente;
+        
     }
 
-    public Inmueble(String estado, String delegacion_municipio, String referencia) {
+    public Inmueble(Integer id_inmueble,String estado, String delegacion_municipio, String referencia) {
 		super();
+		this.id_inmueble = id_inmueble;
 		this.estado = estado;
 		this.delegacion_municipio = delegacion_municipio;
 		this.referencia = referencia;
@@ -85,16 +87,6 @@ public class Inmueble implements Serializable {
 
 	public void setId_inmueble(Integer id_inmueble) {
 		this.id_inmueble = id_inmueble;
-	}
-
-
-	public Integer getId_cliente() {
-		return id_cliente;
-	}
-
-
-	public void setId_cliente(Integer id_cliente) {
-		this.id_cliente = id_cliente;
 	}
 
 

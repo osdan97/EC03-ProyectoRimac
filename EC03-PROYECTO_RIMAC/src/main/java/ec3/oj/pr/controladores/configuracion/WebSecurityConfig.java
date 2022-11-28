@@ -2,6 +2,7 @@ package ec3.oj.pr.controladores.configuracion;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,14 +21,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	protected void configure (HttpSecurity http) throws Exception{
 		
-		http.authorizeRequests()
+		http.csrf().disable().authorizeRequests()
+		.antMatchers(HttpMethod.OPTIONS).permitAll()
+        .antMatchers(HttpMethod.GET).permitAll()
+        .antMatchers(HttpMethod.POST).permitAll()
+        .antMatchers(HttpMethod.PUT).permitAll()
+        .antMatchers(HttpMethod.DELETE).permitAll()
 		.antMatchers("/css/**", "/imagenes/**", "/js/**", "/", "/principal", "/home", 
 				     "/inicio", "/logeo", "/login", "/rest/**").permitAll()
-		             .antMatchers("/peliculas/listarTodo").hasAnyRole("ADMIN","LECTOR","CREADOR","EDITOR", "DEPURADOR")
-		             .antMatchers("/peliculas/nuevo").hasAnyRole("ADMIN","CREADOR")
-		             .antMatchers("/peliculas/guardar").hasAnyRole("ADMIN","CREADOR","EDITOR")
-		             .antMatchers("/peliculas/actualizar/**").hasAnyRole("ADMIN","EDITOR")
-		             .antMatchers("/peliculas/eliminar/**").hasAnyRole("ADMIN","DEPURADOR")
+		             .antMatchers("/Tipo_empleado/listarTodo").hasAnyRole("ADMIN","LECTOR","CREADOR","EDITOR", "DEPURADOR")
+		             .antMatchers("/Tipo_empleado/nuevo").hasAnyRole("ADMIN","CREADOR")
+		             .antMatchers("/Tipo_empleado/guardar").hasAnyRole("ADMIN","CREADOR","EDITOR")
+		             .antMatchers("/Tipo_empleado/actualizar/**").hasAnyRole("ADMIN","EDITOR")
+		             .antMatchers("/Tipo_empleado/eliminar/**").hasAnyRole("ADMIN","DEPURADOR")
 		             
 		             .anyRequest().authenticated()
 		             .and().formLogin().loginPage("/login").defaultSuccessUrl("/bienvenida", true).permitAll()
@@ -40,10 +46,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		
 		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		auth.inMemoryAuthentication().withUser("admin").password(encoder.encode("admin")).roles("ADMIN").and()
-		.withUser("jorge").password(encoder.encode("jorge")).roles("LECTOR").and()
-		.withUser("maria").password(encoder.encode("maria")).roles("CREADOR").and()
-		.withUser("elena").password(encoder.encode("elena")).roles("LECTOR", "DEPURADOR").and()
-		.withUser("ernesto").password(encoder.encode("ernesto")).roles("LECTOR").and();
+		.withUser("oscar").password(encoder.encode("oscar")).roles("LECTOR").and()
+		.withUser("miguel").password(encoder.encode("miguel")).roles("CREADOR").and()
+		.withUser("sebastian").password(encoder.encode("sebastian")).roles("LECTOR", "DEPURADOR").and()
+		.withUser("abel").password(encoder.encode("abel")).roles("LECTOR").and();
 		
 		
 	}

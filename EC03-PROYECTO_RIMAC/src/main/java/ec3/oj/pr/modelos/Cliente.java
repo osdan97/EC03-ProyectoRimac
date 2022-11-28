@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -34,15 +36,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "cliente")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Tipo_empleado.findAll", query = "SELECT c FROM cliente c")
-    , @NamedQuery(name = "Tipo_empleado.findByIdCliente", query = "SELECT c FROM cliente c WHERE c.idcliente = :idcliente")
-    , @NamedQuery(name = "Tipo_empleado.findByIdTipo_empleado", query = "SELECT c FROM cliente c WHERE c.id_tipo_empleado = :id_tipo_empleado")
-    , @NamedQuery(name = "Tipo_empleado.findByNombre", query = "SELECT c FROM cliente c WHERE c.nombre = :nombre")
-    , @NamedQuery(name = "Tipo_empleado.findByDNI", query = "SELECT c FROM cliente c WHERE c.dni = :dni")
-    , @NamedQuery(name = "Tipo_empleado.findByTelefono", query = "SELECT c FROM cliente c WHERE c.telefono = :telefono")
-    , @NamedQuery(name = "Tipo_empleado.findByCorreo", query = "SELECT c FROM cliente c WHERE c.correo = :correo")
-    , @NamedQuery(name = "Tipo_empleado.findByDireccion", query = "SELECT c FROM cliente c WHERE c.direccion = :direccion")
-    , @NamedQuery(name = "Tipo_empleado.findByNro_inmuebles", query = "SELECT c FROM cliente c WHERE c.nro_inmuebles = :nro_inmuebles")
+    @NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c")
+    , @NamedQuery(name = "Cliente.findByIdCliente", query = "SELECT c FROM Cliente c WHERE c.idcliente = :idcliente")
+    , @NamedQuery(name = "Cliente.findByNombre", query = "SELECT c FROM Cliente c WHERE c.nombre = :nombre")
+    , @NamedQuery(name = "Cliente.findByDNI", query = "SELECT c FROM Cliente c WHERE c.dni = :dni")
+    , @NamedQuery(name = "Cliente.findByTelefono", query = "SELECT c FROM Cliente c WHERE c.telefono = :telefono")
+    , @NamedQuery(name = "Cliente.findByCorreo", query = "SELECT c FROM Cliente c WHERE c.correo = :correo")
+    , @NamedQuery(name = "Cliente.findByDireccion", query = "SELECT c FROM Cliente c WHERE c.direccion = :direccion")
+    , @NamedQuery(name = "Cliente.findByNro_inmuebles", query = "SELECT c FROM Cliente c WHERE c.nro_inmuebles = :nro_inmuebles")
     })
 public class Cliente implements Serializable {
 
@@ -52,9 +53,6 @@ public class Cliente implements Serializable {
     @Basic(optional = false)
     @Column(name = "idcliente")
     private Integer idcliente;
-    @Basic(optional = false)
-    @Column(name = "id_tipo_empleado")
-    private Integer id_tipo_empleado;
     @Column(name = "nombre")
     private String nombre;
     @Column(name = "dni")
@@ -67,8 +65,19 @@ public class Cliente implements Serializable {
     private String direccion;
     @Column(name = "nro_inmuebles")
     private Integer nro_inmuebles;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente",fetch=FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_empleado", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Empleado empleado;
+    public Empleado getEmpleado() {
+		return empleado;
+	}
+
+
+	public void setEmpleado(Empleado empleado) {
+		this.empleado = empleado;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente",fetch=FetchType.LAZY)
     @JsonBackReference(value="cliente_inmueble")
     private List<Inmueble> inmueblesList;
 
@@ -76,13 +85,14 @@ public class Cliente implements Serializable {
     }
     
 
-    public Cliente(Integer idcliente, Integer id_tipo_empleado) {
+    public Cliente(Integer idcliente) {
         this.idcliente = idcliente;
-        this.id_tipo_empleado = id_tipo_empleado;
+        
     }
 
     public Cliente(String nombre, String dni, String correo,String telefono,String direccion,Integer nro_inmuebles) {
 		super();
+		
 		this.nombre = nombre;
 		this.dni = dni;
 		this.correo = correo;
@@ -101,17 +111,6 @@ public class Cliente implements Serializable {
 	public void setIdcliente(Integer idcliente) {
 		this.idcliente = idcliente;
 	}
-
-
-	public Integer getId_tipo_empleado() {
-		return id_tipo_empleado;
-	}
-
-
-	public void setId_tipo_empleado(Integer id_tipo_empleado) {
-		this.id_tipo_empleado = id_tipo_empleado;
-	}
-
 
 	public String getNombre() {
 		return nombre;

@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 
+
 /**
  *
  * @author man
@@ -34,16 +37,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "empleado")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "empleado.findAll", query = "SELECT e FROM empleado e")
-    , @NamedQuery(name = "empleado.findByIdEmpleado", query = "SELECT e FROM empleado e WHERE e.id = :id")
-    , @NamedQuery(name = "empleado.findByIdTipo_Empleado", query = "SELECT e FROM empleado e WHERE e.id_tipo_empleado = :id_tipo_empleado")
-    , @NamedQuery(name = "empleado.findByUsuario", query = "SELECT e FROM empleado e WHERE e.usuario = :usuario")
-    , @NamedQuery(name = "empleado.findByContraseña", query = "SELECT e FROM empleado e WHERE e.contraseña = :contraseña")
-    , @NamedQuery(name = "empleado.findByDNI", query = "SELECT e FROM empleado e WHERE e.dni = :dni")
-    , @NamedQuery(name = "empleado.findByNombres", query = "SELECT e FROM empleado e WHERE e.nombres = :nombres")
-    , @NamedQuery(name = "empleado.findByApellidos", query = "SELECT e FROM empleado e WHERE e.apellidos = :apellidos")
-    , @NamedQuery(name = "empleado.findByCorreo", query = "SELECT e FROM empleado e WHERE e.correo = :correo")
-    , @NamedQuery(name = "empleado.findByRol", query = "SELECT e FROM empleado e WHERE e.rol = :rol")
+    @NamedQuery(name = "Empleado.findAll", query = "SELECT e FROM Empleado e")
+    , @NamedQuery(name = "Empleado.findByIdEmpleado", query = "SELECT e FROM Empleado e WHERE e.id = :id")
+    , @NamedQuery(name = "Empleado.findByUsuario", query = "SELECT e FROM Empleado e WHERE e.usuario = :usuario")
+    , @NamedQuery(name = "Empleado.findByContraseña", query = "SELECT e FROM Empleado e WHERE e.contraseña = :contraseña")
+    , @NamedQuery(name = "Empleado.findByDNI", query = "SELECT e FROM Empleado e WHERE e.dni = :dni")
+    , @NamedQuery(name = "Empleado.findByNombres", query = "SELECT e FROM Empleado e WHERE e.nombres = :nombres")
+    , @NamedQuery(name = "Empleado.findByApellidos", query = "SELECT e FROM Empleado e WHERE e.apellidos = :apellidos")
+    , @NamedQuery(name = "Empleado.findByCorreo", query = "SELECT e FROM Empleado e WHERE e.correo = :correo")
+    , @NamedQuery(name = "Empleado.findByRol", query = "SELECT e FROM Empleado e WHERE e.rol = :rol")
 })
 public class Empleado implements Serializable {
 
@@ -53,9 +55,6 @@ public class Empleado implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @Column(name = "id_tipo_empleado")
-    private Integer id_tipo_empleado;
     @Column(name = "usuario")
     private String usuario;
     @Column(name = "contraseña")
@@ -70,23 +69,24 @@ public class Empleado implements Serializable {
     private String correo;
     @Column(name = "rol")
     private String rol;
+    @JoinColumn(name = "id_tipo_empleado", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Tipo_empleado tipo_empleado;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empleado",fetch=FetchType.LAZY)
-    @JsonBackReference(value="empleado_inspeccion")
-    private List<Inspeccion> inspeccionesList;
 
-    public Empleado() {
+	public Empleado() {
     }
     
 
-    public Empleado(Integer id, Integer id_tipo_empleado) {
+    public Empleado(Integer id) {
         this.id = id;
-        this.id_tipo_empleado = id_tipo_empleado;
+        
     }
 
-    public Empleado(String usuario, String contraseña, String dni,String nombres,String apellidos
+    public Empleado(Integer id,String usuario, String contraseña, String dni,String nombres,String apellidos
     		,String correo,String rol) {
 		super();
+		this.id = id;
 		this.usuario = usuario;
 		this.contraseña = contraseña;
 		this.dni = dni;
@@ -107,16 +107,6 @@ public class Empleado implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-
-	public Integer getId_tipo_empleado() {
-		return id_tipo_empleado;
-	}
-
-
-	public void setId_tipo_empleado(Integer id_tipo_empleado) {
-		this.id_tipo_empleado = id_tipo_empleado;
 	}
 
 
@@ -188,16 +178,16 @@ public class Empleado implements Serializable {
 	public void setRol(String rol) {
 		this.rol = rol;
 	}
+	
+	
+    public Tipo_empleado getTipo_empleado() {
+			return tipo_empleado;
+		}
 
-	@XmlTransient
-	public List<Inspeccion> getInspeccionesList() {
-		return inspeccionesList;
-	}
 
-
-	public void setInspeccionesList(List<Inspeccion> inspeccionesList) {
-		this.inspeccionesList = inspeccionesList;
-	}
+    public void setTipo_empleado(Tipo_empleado tipo_empleado) {
+			this.tipo_empleado = tipo_empleado;
+		}
 
 
 	@Override
